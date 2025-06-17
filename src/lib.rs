@@ -15,7 +15,7 @@ pub use anchor::*;
 #[doc(hidden)]
 pub use egui::__run_test_ctx;
 use egui::{
-    vec2, Color32, Context, FontId, Id, LayerId, Order, Rect, Rounding, Shadow, Stroke, Vec2,
+    vec2, Color32, Context, CornerRadius, FontId, Id, LayerId, Order, Rect, Shadow, Stroke, Vec2,
 };
 
 pub(crate) const TOAST_WIDTH: f32 = 180.;
@@ -264,7 +264,7 @@ impl Toasts {
 
             let line_count = toast.caption.chars().filter(|c| *c == '\n').count() + 1;
             let icon_width = caption_height / line_count as f32;
-            let rounding = Rounding::same(4.);
+            let rounding = CornerRadius::same(4);
 
             // Create toast icon
             let icon_font = FontId::proportional(icon_width);

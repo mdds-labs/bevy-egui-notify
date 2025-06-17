@@ -1,10 +1,11 @@
 use eframe::egui::FontDefinitions;
+use eframe::egui::{Color32, Shadow, Style, Visuals};
 use eframe::{
     egui::{Context, Slider, Window},
     App, Frame, NativeOptions,
 };
-use egui::{Color32, FontId, Shadow, Style, Visuals};
 use egui_notify::{Toast, Toasts};
+use std::sync::Arc;
 use std::time::Duration;
 
 struct ExampleApp {
@@ -17,7 +18,7 @@ struct ExampleApp {
     font_size: f32,
     dark: bool,
     custom_level_string: String,
-    custom_level_color: egui::Color32,
+    custom_level_color: eframe::egui::Color32,
     shadow: bool,
 }
 
@@ -32,8 +33,8 @@ impl App for ExampleApp {
                 self.toasts = if self.shadow {
                     Toasts::default().with_shadow(Shadow {
                         offset: Default::default(),
-                        blur: 30.0,
-                        spread: 5.0,
+                        blur: 30,
+                        spread: 5,
                         color: Color32::from_black_alpha(70),
                     })
                 } else {
@@ -64,8 +65,7 @@ impl App for ExampleApp {
                 };
                 t.closable(self.closable)
                     .duration(duration)
-                    .show_progress_bar(self.show_progress_bar)
-                    .font(FontId::proportional(self.font_size));
+                    .show_progress_bar(self.show_progress_bar);
             };
 
             ui.horizontal(|ui| {
@@ -151,7 +151,7 @@ fn main() -> eframe::Result<()> {
             let mut font_def = FontDefinitions::default();
             egui_phosphor::add_to_fonts(&mut font_def, egui_phosphor::Variant::Regular);
             for data in font_def.font_data.values_mut() {
-                data.tweak.scale = 1.25;
+                Arc::get_mut(data).map(|d| d.tweak.scale = 1.25);
             }
             cc.egui_ctx.set_fonts(font_def);
 
@@ -169,7 +169,7 @@ And another one"#
                 dark: true,
                 font_size: 16.,
                 custom_level_string: "$".into(),
-                custom_level_color: egui::Color32::GREEN,
+                custom_level_color: eframe::egui::Color32::GREEN,
                 shadow: true,
             }))
         }),

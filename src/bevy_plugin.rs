@@ -34,17 +34,15 @@ impl Default for EguiToastsPlugin {
 
 impl Plugin for EguiToastsPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(EguiToasts(
-            self.builder
-                .map(|f| f())
-                .unwrap_or_default(),
-        ))
-        .add_systems(Update, update_toasts);
+        app.insert_resource(EguiToasts(self.builder.map(|f| f()).unwrap_or_default()))
+            .add_systems(Update, update_toasts);
     }
 }
 
 fn update_toasts(mut toasts: ResMut<EguiToasts>, mut ctx: Query<&mut EguiContext>) {
-    toasts.0.show(ctx.single_mut().get_mut());
+    if let Ok(mut egui_ctx) = ctx.single_mut() {
+        toasts.0.show(egui_ctx.get_mut());
+    }
 }
 
 /// Show a toast with the given message, in an error state.
