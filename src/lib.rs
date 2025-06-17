@@ -1,8 +1,5 @@
 //! egui-notify
 //! Simple notifications library for egui.
-
-#![warn(missing_docs)]
-
 use bevy_egui::egui;
 mod bevy_plugin;
 pub use bevy_plugin::*;

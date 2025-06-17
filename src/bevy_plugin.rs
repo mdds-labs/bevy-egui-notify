@@ -1,5 +1,4 @@
 use bevy_egui::egui;
-
 use std::time::Duration;
 
 use crate::Toasts;
@@ -7,16 +6,17 @@ use bevy::prelude::*;
 use bevy_egui::EguiContext;
 use egui::FontId;
 
-const DEFAULT_TOAST_FONT_SIZE: f32 = 25.0;
-const TOAST_VERTICAL_MARGIN: f32 = 30.0;
+const DEFAULT_TOAST_FONT_SIZE: f32 = 20.0;
+const TOAST_VERTICAL_MARGIN: f32 = 25.0;
 
 /// resources that stores the toasts context
 #[derive(Resource)]
 pub struct EguiToasts(pub Toasts);
 
 /// Plugin for add egui-toasts to bevy system
+
 pub struct EguiToastsPlugin {
-    builder: Option<fn() -> Toasts>,
+    pub builder: Option<fn() -> Toasts>,
 }
 
 // opinionated defaults
