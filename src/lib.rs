@@ -200,7 +200,7 @@ impl Toasts {
             ..
         } = self;
 
-        let mut pos = anchor.screen_corner(ctx.input(|i| i.screen_rect.max), *margin);
+        let mut pos = anchor.screen_corner(ctx.input(|i| i.content_rect().max), *margin);
         let p = ctx.layer_painter(LayerId::new(Order::Foreground, Id::new("toasts")));
 
         let mut dismiss = None;
@@ -250,7 +250,7 @@ impl Toasts {
                 .unwrap_or_else(|| FontId::proportional(16.));
 
             // Create toast label
-            let caption_galley = ctx.fonts(|f| {
+            let caption_galley = ctx.fonts_mut(|f| {
                 f.layout(
                     toast.caption.clone(),
                     caption_font,
@@ -268,24 +268,27 @@ impl Toasts {
 
             // Create toast icon
             let icon_font = FontId::proportional(icon_width);
-            let icon_galley = match &toast.level {
-                ToastLevel::Info => {
-                    Some(ctx.fonts(|f| f.layout("ℹ".into(), icon_font, INFO_COLOR, f32::INFINITY)))
-                }
-                ToastLevel::Warning => Some(
-                    ctx.fonts(|f| f.layout("⚠".into(), icon_font, WARNING_COLOR, f32::INFINITY)),
-                ),
-                ToastLevel::Error => Some(
-                    ctx.fonts(|f| f.layout("！".into(), icon_font, ERROR_COLOR, f32::INFINITY)),
-                ),
-                ToastLevel::Success => Some(
-                    ctx.fonts(|f| f.layout("✅".into(), icon_font, SUCCESS_COLOR, f32::INFINITY)),
-                ),
-                ToastLevel::Custom(s, c) => {
-                    Some(ctx.fonts(|f| f.layout(s.clone(), icon_font, *c, f32::INFINITY)))
-                }
-                ToastLevel::None => None,
-            };
+            let icon_galley =
+                match &toast.level {
+                    ToastLevel::Info => {
+                        Some(ctx.fonts_mut(|f| {
+                            f.layout("ℹ".into(), icon_font, INFO_COLOR, f32::INFINITY)
+                        }))
+                    }
+                    ToastLevel::Warning => Some(ctx.fonts_mut(|f| {
+                        f.layout("⚠".into(), icon_font, WARNING_COLOR, f32::INFINITY)
+                    })),
+                    ToastLevel::Error => Some(ctx.fonts_mut(|f| {
+                        f.layout("！".into(), icon_font, ERROR_COLOR, f32::INFINITY)
+                    })),
+                    ToastLevel::Success => Some(ctx.fonts_mut(|f| {
+                        f.layout("✅".into(), icon_font, SUCCESS_COLOR, f32::INFINITY)
+                    })),
+                    ToastLevel::Custom(s, c) => {
+                        Some(ctx.fonts_mut(|f| f.layout(s.clone(), icon_font, *c, f32::INFINITY)))
+                    }
+                    ToastLevel::None => None,
+                };
 
             let (action_width, action_height) =
                 icon_galley.as_ref().map_or((0., 0.), |icon_galley| {
@@ -295,7 +298,7 @@ impl Toasts {
             // Create closing cross
             let cross_galley = if toast.closable {
                 let cross_fid = FontId::proportional(icon_width);
-                let cross_galley = ctx.fonts(|f| {
+                let cross_galley = ctx.fonts_mut(|f| {
                     f.layout(
                         "❌".into(),
                         cross_fid,
